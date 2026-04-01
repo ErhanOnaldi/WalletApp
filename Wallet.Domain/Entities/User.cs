@@ -1,6 +1,6 @@
 namespace Wallet.Domain.Entities;
 
-public class User
+public class User : IAuditEntity
 {
     public Guid Id { get; set; }
     public List<Wallet> Wallets { get; set; } = null!;
@@ -9,5 +9,6 @@ public class User
     public string FullName { get; set; } = null!;
     public string PasswordHash { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public bool IsActive { get; set; }
 }

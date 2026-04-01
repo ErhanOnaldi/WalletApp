@@ -2,7 +2,7 @@ using Wallet.Domain.Enums;
 
 namespace Wallet.Domain.Entities;
 
-public class Wallet
+public class Wallet : IAuditEntity
 {
     public int Id { get; set; }
     public User User { get; set; } = null!;
@@ -12,5 +12,6 @@ public class Wallet
     public decimal Balance { get; set; }
     public decimal DailyTransferLimit { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public bool IsActive { get; set; }
 }

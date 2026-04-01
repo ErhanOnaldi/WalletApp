@@ -2,7 +2,7 @@ using Wallet.Domain.Enums;
 
 namespace Wallet.Domain.Entities;
 
-public class Transfer
+public class Transfer : IAuditEntity
 {
     public int Id { get; set; }
     public int ToWalletId { get; set; }
@@ -15,6 +15,7 @@ public class Transfer
     public TransferStatus TransferStatus { get; set; }
     public Guid IdempotencyKey { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public DateTime CompletedAt { get; set; }
 
 }

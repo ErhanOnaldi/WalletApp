@@ -1,6 +1,6 @@
 namespace Wallet.Domain.Entities;
 
-public class AuditLog
+public class AuditLog : IAuditEntity
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
@@ -12,4 +12,5 @@ public class AuditLog
     public string? NewValues { get; set; }  // JSON string, nullable (silme işlemlerinde sonraki hal yok)
     public string? IpAddress { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }
