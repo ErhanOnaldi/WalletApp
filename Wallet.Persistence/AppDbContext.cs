@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Wallet.Persistence;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
