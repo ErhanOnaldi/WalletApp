@@ -2,7 +2,7 @@ namespace Wallet.Domain.Entities;
 
 public class User
 {
-    Guid UserId { get; set; }
+    public Guid Id { get; set; }
     public List<Wallet> Wallets { get; set; } = null!;
     public List<AuditLog>? AuditLogs { get; set; }
     public string Email { get; set; } = null!;
