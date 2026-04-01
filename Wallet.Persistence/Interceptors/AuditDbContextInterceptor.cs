@@ -24,7 +24,7 @@ public class AuditDbContextInterceptor : SaveChangesInterceptor
                     entityEntry.Context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    continue;
             }
         }
         return base.SavingChangesAsync(eventData, result, cancellationToken);
