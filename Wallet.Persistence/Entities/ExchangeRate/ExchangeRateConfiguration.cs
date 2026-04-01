@@ -19,7 +19,7 @@ public class ExchangeRateConfiguration : IEntityTypeConfiguration<Domain.Entitie
             .IsRequired()
             .HasColumnType("decimal(18, 6)"); // Standard for exchange rates
             
-        builder.Property(c => c.LastUpdated)
+        builder.Property(c => c.UpdatedAt)
             .IsRequired();
     }
 }
