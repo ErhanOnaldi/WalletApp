@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Wallet.Application\Wallet.Application.csproj" />
+      <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
+      <ProjectReference Include="..\Wallet.Persistence\Wallet.Persistence.csproj" />
+    </ItemGroup>
+
+</Project>
