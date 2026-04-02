@@ -23,8 +23,10 @@ public class AuditDbContextInterceptor : SaveChangesInterceptor
                     entity.UpdatedAt = DateTime.UtcNow;
                     entityEntry.Context.Entry(entity).Property(x => x.CreatedAt).IsModified = false;
                     break;
-                default:
-                    continue;
+                case EntityState.Detached:
+                case EntityState.Unchanged:
+                case EntityState.Deleted:
+                    break;
             }
         }
         return base.SavingChangesAsync(eventData, result, cancellationToken);
