@@ -1,6 +1,6 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-
+using Wallet.Domain.Entities;
 namespace Wallet.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Domain.Entities.Transfer> Transfers { get; set; } = default!;
     public DbSet<Domain.Entities.ExchangeRate> ExchangeRates { get; set; } = default!;
     public DbSet<Domain.Entities.AuditLog> AuditLogs { get; set; } = default!;
+    public DbSet<Domain.Entities.RefreshToken> RefreshTokens { get; set; } = default!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         
