@@ -1,0 +1,7 @@
+using WalletEntity = Wallet.Domain.Entities.Wallet;
+
+namespace Wallet.Application.Interfaces.Persistence.Wallets;
+
+public interface IWalletRepository : IRepository<WalletEntity>
+{
+}

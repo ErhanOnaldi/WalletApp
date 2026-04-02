@@ -2,8 +2,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Wallet.Application.Interfaces.Persistence.AuditLogs;
+using Wallet.Application.Interfaces.Persistence.ExchangeRates;
+using Wallet.Application.Interfaces.Persistence.RefreshTokens;
+using Wallet.Application.Interfaces.Persistence.Transactions;
+using Wallet.Application.Interfaces.Persistence.Transfers;
+using Wallet.Application.Interfaces.Persistence.Users;
+using Wallet.Application.Interfaces.Persistence.Wallets;
 using Wallet.Domain.Options;
+using Wallet.Persistence.AuditLogs;
+using Wallet.Persistence.ExchangeRates;
 using Wallet.Persistence.Interceptors;
+using Wallet.Persistence.RefreshTokens;
+using Wallet.Persistence.Transactions;
+using Wallet.Persistence.Transfers;
+using Wallet.Persistence.Users;
+using Wallet.Persistence.Wallets;
 
 namespace Wallet.Persistence.Extensions;
 
@@ -13,6 +27,13 @@ public static class PersistenceExtensions // Extension Classlar static olmalı
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<AuditDbContextInterceptor>();
+        services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+        services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
+        services.AddScoped<ITransferRepository, TransferRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IWalletRepository, WalletRepository>();
     
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {

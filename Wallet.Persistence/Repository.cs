@@ -6,14 +6,15 @@ namespace Wallet.Persistence;
 
 public class Repository<T>(AppDbContext dbContext) : IRepository<T> where T : class
 {
-    private readonly DbSet<T> _dbSet = dbContext.Set<T>();
+    protected AppDbContext DbContext { get; } = dbContext;
+    protected DbSet<T> DbSet { get; } = dbContext.Set<T>();
     
-    public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate) => _dbSet.AnyAsync(predicate);
-    public Task<List<T>> GetAllAsync() => _dbSet.ToListAsync();
-    public Task<List<T>> GetPagedAsync(int pageNumber, int pageSize) => _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
-    public IQueryable<T> Where(Expression<Func<T, bool>> predicate) => _dbSet.Where(predicate).AsQueryable().AsNoTracking();
-    public ValueTask<T?> GetByIdAsync(int id) => _dbSet.FindAsync(id);
-    public async Task AddAsync(T entity) => await _dbSet.AddAsync(entity);
-    public void Update(T entity) => _dbSet.Update(entity);
-    public void Delete(T entity) => _dbSet.Remove(entity);
+    public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate) => DbSet.AnyAsync(predicate);
+    public Task<List<T>> GetAllAsync() => DbSet.ToListAsync();
+    public Task<List<T>> GetPagedAsync(int pageNumber, int pageSize) => DbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+    public IQueryable<T> Where(Expression<Func<T, bool>> predicate) => DbSet.Where(predicate).AsQueryable().AsNoTracking();
+    public ValueTask<T?> GetByIdAsync(int id) => DbSet.FindAsync(id);
+    public async Task AddAsync(T entity) => await DbSet.AddAsync(entity);
+    public void Update(T entity) => DbSet.Update(entity);
+    public void Delete(T entity) => DbSet.Remove(entity);
 }
