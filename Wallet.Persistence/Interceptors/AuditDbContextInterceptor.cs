@@ -6,6 +6,7 @@ namespace Wallet.Persistence.Interceptors;
 
 public class AuditDbContextInterceptor : SaveChangesInterceptor
 {
+    
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result,
         CancellationToken cancellationToken = new CancellationToken())
     {
