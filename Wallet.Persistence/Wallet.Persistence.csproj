@@ -20,12 +20,4 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Entities\AuditLog\" />
-      <Folder Include="Entities\ExchangeRate\" />
-      <Folder Include="Entities\Transaction\" />
-      <Folder Include="Entities\Transfer\" />
-      <Folder Include="Entities\Wallet\" />
-    </ItemGroup>
-
 </Project>

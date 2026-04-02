@@ -4,7 +4,7 @@ namespace Wallet.Application.Interfaces.Token;
 
 public interface ITokenService
 {
-    Task<string> GenerateJwtTokenAsync(AuthLogoutRequest request);
+    Task<string> GenerateJwtTokenAsync(AuthGenerateJwtTokenRequest request);
     Task<string> GenerateRefreshTokenAsync();
     
 }

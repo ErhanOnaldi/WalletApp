@@ -4,9 +4,9 @@ namespace Wallet.Application.Features.Auth;
 
 public interface IAuthService
 {
-    ServiceResult Register(AuthRegisterRequest request);
-    ServiceResult<AuthLoginResponse> Login(AuthLoginRequest request);
-    ServiceResult Logout(AuthLogoutRequest request);
-    ServiceResult<AuthLoginResponse> Refresh(AuthRefreshRequest request);
+    Task<ServiceResult> Register(AuthRegisterRequest request);
+    Task<ServiceResult<AuthLoginResponse>> Login(AuthLoginRequest request);
+    Task<ServiceResult> Logout(AuthLogoutRequest request);
+    Task<ServiceResult<AuthLoginResponse>> Refresh(AuthRefreshRequest request);
 
 }

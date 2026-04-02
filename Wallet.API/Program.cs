@@ -1,12 +1,14 @@
 using Wallet.API.Extensions;
+using Wallet.Application.Extensions;
 using Wallet.Persistence.Extensions;
+using Wallet.Token.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddSwaggerGenExt();
-builder.Services.AddPersistence(builder.Configuration).AddExceptionHandler();
+builder.Services.AddPersistence(builder.Configuration).AddExceptionHandler().AddToken().AddApplications();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

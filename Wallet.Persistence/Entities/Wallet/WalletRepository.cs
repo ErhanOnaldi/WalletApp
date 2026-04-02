@@ -1,7 +1,7 @@
 using Wallet.Application.Interfaces.Persistence.Wallets;
 using WalletEntity = Wallet.Domain.Entities.Wallet;
 
-namespace Wallet.Persistence.Wallets;
+namespace Wallet.Persistence.Entities.Wallet;
 
 public class WalletRepository(AppDbContext dbContext) : Repository<WalletEntity>(dbContext), IWalletRepository
 {

@@ -1,3 +1,3 @@
 namespace Wallet.Application.Features.Auth.DTOs;
 
-public record AuthRefreshRequest();
+public record AuthRefreshRequest(string RefreshToken);

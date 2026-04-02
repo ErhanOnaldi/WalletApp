@@ -19,6 +19,7 @@
       <ProjectReference Include="..\Wallet.Application\Wallet.Application.csproj" />
       <ProjectReference Include="..\Wallet.Domain\Wallet.Domain.csproj" />
       <ProjectReference Include="..\Wallet.Persistence\Wallet.Persistence.csproj" />
+      <ProjectReference Include="..\Wallet.Token\Wallet.Token.csproj" />
     </ItemGroup>
 
 </Project>

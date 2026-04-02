@@ -10,14 +10,14 @@ using Wallet.Application.Interfaces.Persistence.Transfers;
 using Wallet.Application.Interfaces.Persistence.Users;
 using Wallet.Application.Interfaces.Persistence.Wallets;
 using Wallet.Domain.Options;
-using Wallet.Persistence.AuditLogs;
-using Wallet.Persistence.ExchangeRates;
+using Wallet.Persistence.Entities.AuditLog;
+using Wallet.Persistence.Entities.ExchangeRate;
+using Wallet.Persistence.Entities.RefreshToken;
+using Wallet.Persistence.Entities.Transaction;
+using Wallet.Persistence.Entities.Transfer;
+using Wallet.Persistence.Entities.User;
+using Wallet.Persistence.Entities.Wallet;
 using Wallet.Persistence.Interceptors;
-using Wallet.Persistence.RefreshTokens;
-using Wallet.Persistence.Transactions;
-using Wallet.Persistence.Transfers;
-using Wallet.Persistence.Users;
-using Wallet.Persistence.Wallets;
 
 namespace Wallet.Persistence.Extensions;
 
