@@ -4,7 +4,7 @@ namespace Wallet.Domain.Entities;
 
 public class ExchangeRate : IAuditEntity
 {
-    int Id {get; set;}
+    public int Id {get; set;}
     public Currency ToCurrency { get; set; }
     public Currency FromCurrency { get; set; }
     public decimal Rate { get; set; }

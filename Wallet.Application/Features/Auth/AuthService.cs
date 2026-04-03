@@ -100,7 +100,13 @@ public class AuthService(ITokenService tokenService, IUnitOfWork unitOfWork, IUs
         refreshToken.IsRevoked = true;
         refreshToken.ReplacedByToken = newRefreshToken;
         refreshTokenRepository.Update(refreshToken);
-        await refreshTokenRepository.AddAsync(new RefreshToken());
+        await refreshTokenRepository.AddAsync(new RefreshToken()
+        {
+            IsRevoked = false,
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(30),
+            Token = newRefreshToken
+        });
         await unitOfWork.SaveChangesAsync();
         var response = new AuthLoginResponse(accessToken,newRefreshToken,DateTime.UtcNow.AddMinutes(15));
         return ServiceResult<AuthLoginResponse>.Success(response);
