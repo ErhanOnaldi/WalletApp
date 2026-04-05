@@ -1,13 +1,14 @@
-using Wallet.Application.Features.Auth.DTOs;
 using Wallet.Application.Features.Wallet.DTOs;
 using Wallet.Application.Interfaces.Persistence;
-using Wallet.Application.Interfaces.Persistence.Users;
+using Wallet.Application.Interfaces.Persistence.Transactions;
 using Wallet.Application.Interfaces.Persistence.Wallets;
+using Wallet.Domain.Entities;
+using Wallet.Domain.Enums;
 using WalletEntity = Wallet.Domain.Entities.Wallet;
 
 namespace Wallet.Application.Features.Wallet;
 
-public class WalletService(IWalletRepository walletRepository, IUserRepository userRepository,IUnitOfWork unitOfWork) : IWalletService
+public class WalletService(IWalletRepository walletRepository, ITransactionRepository transactionRepository,IUnitOfWork unitOfWork) : IWalletService
 {
     
     public async Task<ServiceResult<List<WalletGetByIdResponse>>> GetAllWalletList(Guid userId)
@@ -97,6 +98,80 @@ public class WalletService(IWalletRepository walletRepository, IUserRepository u
 
         wallet.DailyTransferLimit = dailyTransferLimit;
         walletRepository.Update(wallet);
+        await unitOfWork.SaveChangesAsync();
+        return ServiceResult.Success();
+    }
+
+    public async Task<ServiceResult> Deposit(Guid userId, Guid walletId, WalletDepositWithdrawalRequest depositRequest)
+    {
+        var wallet = await walletRepository.GetByIdAsync(walletId);
+        if (wallet is null)
+        {
+            return ServiceResult.Fail("wallet not found");
+        }
+        if (wallet.UserId != userId)
+        {
+            return ServiceResult.Fail("User does not own the wallet");
+        }
+        if (!wallet.IsActive)
+        {
+            return ServiceResult.Fail("Wallet is not active");
+        }
+        if (!(depositRequest.Amount > 0))
+        {
+            return ServiceResult.Fail("amount can't be lower or equal to zero");
+        }
+        
+        wallet.Balance += depositRequest.Amount;
+        walletRepository.Update(wallet);
+        var transaction = new Transaction()
+        {
+            Amount = depositRequest.Amount,
+            BalanceAfter = wallet.Balance,
+            WalletId = walletId,
+            Description = depositRequest.Description,
+            TransactionType = TransactionType.Deposit,
+        };
+        await transactionRepository.AddAsync(transaction);
+        await unitOfWork.SaveChangesAsync();
+        return ServiceResult.Success();
+    }
+
+    public async Task<ServiceResult> Withdrawal(Guid userId, Guid walletId, WalletDepositWithdrawalRequest withdrawalRequest)
+    {
+        var wallet = await walletRepository.GetByIdAsync(walletId);
+        if (wallet is null)
+        {
+            return ServiceResult.Fail("wallet not found");
+        }
+        if (wallet.UserId != userId)
+        {
+            return ServiceResult.Fail("User does not own the wallet");
+        }
+        if (!wallet.IsActive)
+        {
+            return ServiceResult.Fail("Wallet is not active");
+        }
+
+        if (!(withdrawalRequest.Amount > 0))
+        {
+            return ServiceResult.Fail("amount can't be lower or equal to zero");
+        }
+        if (withdrawalRequest.Amount > wallet.Balance)
+        {
+            return ServiceResult.Fail("amount withdraw cannot exceed the balance");
+        }
+        wallet.Balance -= withdrawalRequest.Amount;
+        walletRepository.Update(wallet);
+        var transaction = new Transaction()
+        {
+            Amount = withdrawalRequest.Amount,
+            BalanceAfter = wallet.Balance,
+            WalletId = walletId,
+            Description = withdrawalRequest.Description,
+            TransactionType = TransactionType.Withdrawal,
+        };
+        await transactionRepository.AddAsync(transaction);
         await unitOfWork.SaveChangesAsync();
         return ServiceResult.Success();
     }
