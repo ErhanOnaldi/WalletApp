@@ -11,14 +11,14 @@ namespace Wallet.Application.Features.Wallet;
 public class WalletService(IWalletRepository walletRepository, ITransactionRepository transactionRepository,IUnitOfWork unitOfWork) : IWalletService
 {
     
-    public async Task<ServiceResult<List<WalletGetByIdResponse>>> GetAllWalletList(Guid userId)
+    public async Task<ServiceResult<List<WalletGetByIdResponse>>> GetAllWalletListAsync(Guid userId)
     {
         var wallets = await walletRepository.GetAllWalletsAsync(userId);
         var walletsAsDto = wallets.Select(x => new WalletGetByIdResponse(x.Id, x.UserId, x.Currency, x.Balance, x.DailyTransferLimit, x.CreatedAt)).ToList();
         return ServiceResult<List<WalletGetByIdResponse>>.Success(walletsAsDto);
     }
 
-    public async Task<ServiceResult<WalletGetByIdResponse>> GetWalletById(Guid walletId, Guid userId)
+    public async Task<ServiceResult<WalletGetByIdResponse>> GetWalletByIdAsync(Guid walletId, Guid userId)
     {
         var wallet = await walletRepository.GetByIdAsync(walletId);
         if (wallet is null)
@@ -33,7 +33,7 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
         return ServiceResult<WalletGetByIdResponse>.Success(walletAsDto);
     }
 
-    public async Task<ServiceResult<Guid>> CreateWallet(Guid userId,WalletCreateRequest request)
+    public async Task<ServiceResult<Guid>> CreateWalletAsync(Guid userId,WalletCreateRequest request)
     {
         var wallet = new WalletEntity()
         {
@@ -48,7 +48,7 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
         return ServiceResult<Guid>.SuccessAsCreated(wallet.Id,$"api/wallets/{wallet.Id}");
     }
 
-    public async Task<ServiceResult> DeleteWallet(Guid userId, Guid walletId)
+    public async Task<ServiceResult> DeleteWalletAsync(Guid userId, Guid walletId)
     {
         var wallet = await walletRepository.GetByIdAsync(walletId);
         if (wallet is null)
@@ -75,7 +75,7 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
         return ServiceResult.Success();
     }
 
-    public async Task<ServiceResult> UpdateWallet(Guid walletId,Guid userId, decimal dailyTransferLimit)
+    public async Task<ServiceResult> UpdateWalletAsync(Guid walletId,Guid userId, WalletUpdateRequest request)
     {
         var wallet = await walletRepository.GetByIdAsync(walletId);
         if (wallet is null)
@@ -87,22 +87,22 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
         {
             return ServiceResult.Fail("User does not own the wallet");
         }
-        if (wallet.DailyTransferLimit > dailyTransferLimit)
+        if (wallet.DailyTransferLimit > request.DailyTransferLimit)
         {
             return ServiceResult.Fail("New daily transfer limit cannot be lower than the current daily transfer limit");
         }
-        if (!(dailyTransferLimit <= wallet.DailyTransferLimit * 3))
+        if (!(request.DailyTransferLimit <= wallet.DailyTransferLimit * 3))
         {
             return ServiceResult.Fail("The daily transfer limit cannot be updated to more than three times the previous limit.");
         }
 
-        wallet.DailyTransferLimit = dailyTransferLimit;
+        wallet.DailyTransferLimit = request.DailyTransferLimit;
         walletRepository.Update(wallet);
         await unitOfWork.SaveChangesAsync();
         return ServiceResult.Success();
     }
 
-    public async Task<ServiceResult> Deposit(Guid userId, Guid walletId, WalletDepositWithdrawalRequest depositRequest)
+    public async Task<ServiceResult> DepositAsync(Guid userId, Guid walletId, WalletDepositWithdrawalRequest depositRequest)
     {
         var wallet = await walletRepository.GetByIdAsync(walletId);
         if (wallet is null)
@@ -137,7 +137,7 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
         return ServiceResult.Success();
     }
 
-    public async Task<ServiceResult> Withdrawal(Guid userId, Guid walletId, WalletDepositWithdrawalRequest withdrawalRequest)
+    public async Task<ServiceResult> WithdrawalAsync(Guid userId, Guid walletId, WalletDepositWithdrawalRequest withdrawalRequest)
     {
         var wallet = await walletRepository.GetByIdAsync(walletId);
         if (wallet is null)
