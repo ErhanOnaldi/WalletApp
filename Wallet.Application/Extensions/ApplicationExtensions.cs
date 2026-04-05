@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Wallet.Application.Features.Auth;
+using Wallet.Application.Features.ExchangeRate;
+using Wallet.Application.Features.Transfer;
 using Wallet.Application.Features.Wallet;
 using Wallet.Application.Interfaces.Token.Hashing;
 
@@ -11,6 +13,8 @@ public static class ApplicationExtensions
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IWalletService, WalletService>();
+        services.AddScoped<ITransferService, TransferService>();
+        services.AddScoped<IExchangeRateService, ExchangeRateService>();
         
         return services;
     }
