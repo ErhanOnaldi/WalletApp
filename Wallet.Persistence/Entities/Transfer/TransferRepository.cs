@@ -22,4 +22,10 @@ public class TransferRepository(AppDbContext dbContext) : Repository<Domain.Enti
         var transfers = await DbContext.Transfers.Where(x => x.FromWalletId == walletId).ToListAsync();
         return transfers;
     }
+
+    public Task<List<Domain.Entities.Transfer>> GetAllTransfersByUser(Guid userId)
+    {
+        var transfers = DbContext.Transfers.Where(x => x.FromWallet.UserId == userId).ToListAsync();
+        return transfers;
+    }
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Application;
 
@@ -8,6 +9,10 @@ namespace Wallet.API.Controllers;
 [ApiController]
 public class CustomBaseController : ControllerBase
 {
+    protected Guid GetUserId()
+    {
+        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    }
     protected IActionResult CreateActionResult<T>(ServiceResult<T> result)
     {
         if (result.StatusCode == HttpStatusCode.Created)

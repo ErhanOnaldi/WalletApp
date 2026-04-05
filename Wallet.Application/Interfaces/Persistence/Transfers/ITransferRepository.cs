@@ -7,4 +7,5 @@ public interface ITransferRepository : IRepository<Transfer>
     Task<Transfer?> GetByIdempotencyKeyAsync(Guid idempotencyKey);
     Task<decimal> GetTodaysTotalTransferredAmountAsync(Guid fromWalletId);
     Task<List<Transfer>> GetTransfersByWallet(Guid walletId);
+    Task<List<Transfer>> GetAllTransfersByUser(Guid userId);
 }

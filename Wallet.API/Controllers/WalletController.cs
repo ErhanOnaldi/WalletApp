@@ -8,11 +8,6 @@ namespace Wallet.API.Controllers;
 [Authorize]
 public class WalletController(IWalletService walletService) : CustomBaseController
 {
-    private Guid GetUserId()
-    {
-        return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-    }
-    
     [HttpGet]
     public async Task<IActionResult> GetAllWalletList() => CreateActionResult(await walletService.GetAllWalletListAsync(GetUserId()));
     [HttpGet("{walletId}")]

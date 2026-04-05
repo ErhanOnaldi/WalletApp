@@ -107,7 +107,6 @@ public class TransferService(ITransferRepository transferRepository,
         await unitOfWork.SaveChangesAsync();
         return  ServiceResult.Success();
     }
-
     public async Task<ServiceResult<TransferGetResponse>> GetTransferById(Guid transferId,Guid userId)
     {
         var transfer = await transferRepository.GetByIdAsync(transferId);
@@ -131,18 +130,9 @@ public class TransferService(ITransferRepository transferRepository,
             transfer.ExchangeRate);
         return ServiceResult<TransferGetResponse>.Success(transferAsDto);
     }
-    public async Task<ServiceResult<List<TransferGetResponse>>> GetTransfersByWallet(Guid walletId,Guid userId)
+    public async Task<ServiceResult<List<TransferGetResponse>>> GetTransfersByUser(Guid userId)
     {
-        var wallet =  await walletRepository.GetByIdAsync(userId);
-        if (wallet is null)
-        {
-            return ServiceResult<List<TransferGetResponse>>.Fail("wallet not found");
-        }
-        if (userId !=  wallet.UserId )
-        {
-            return ServiceResult<List<TransferGetResponse>>.Fail("transfer does not belong to userId");
-        }
-        var transfers =await transferRepository.GetTransfersByWallet(walletId);
+        var transfers =await transferRepository.GetAllTransfersByUser(userId);
         var transfersDto = transfers.Select(transfer => new TransferGetResponse(transfer.IdempotencyKey,
             transfer.ToWalletId,
             transfer.FromWalletId,
