@@ -4,4 +4,5 @@ namespace Wallet.Application.Interfaces.Persistence.Wallets;
 
 public interface IWalletRepository : IRepository<WalletEntity>
 {
+    Task<List<WalletEntity>> GetAllWalletsAsync(Guid userId);
 }
