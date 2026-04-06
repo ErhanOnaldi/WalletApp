@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Wallet.API.Extensions;
 using Wallet.Application.Extensions;
+using Wallet.Persistence;
 using Wallet.Persistence.Extensions;
 using Wallet.Token.Extensions;
 
@@ -20,6 +22,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Apply pending migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
