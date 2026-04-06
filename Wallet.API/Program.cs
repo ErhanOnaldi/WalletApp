@@ -8,7 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddSwaggerGenExt();
-builder.Services.AddPersistence(builder.Configuration).AddExceptionHandler().AddToken().AddApplications();
+builder.Services
+    .AddPersistence(builder.Configuration)
+    .AddExceptionHandler()
+    .AddToken(builder.Configuration)
+    .AddApplications();
+builder.Services.AddHttpContextAccessor(); 
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -23,6 +29,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

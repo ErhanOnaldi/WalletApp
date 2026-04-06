@@ -4,7 +4,7 @@ using Wallet.Domain.Entities;
 
 namespace Wallet.Persistence.Interceptors;
 
-public class AuditDbContextInterceptor : SaveChangesInterceptor
+public class AuditDbContextInterceptor() : SaveChangesInterceptor
 {
     
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result,
@@ -13,7 +13,7 @@ public class AuditDbContextInterceptor : SaveChangesInterceptor
         foreach (var entityEntry in eventData.Context!.ChangeTracker.Entries().ToList())
         {
             if(entityEntry.Entity is not IAuditEntity entity) continue;
-
+            
             switch (entityEntry.State)
             {
                 case(EntityState.Added):

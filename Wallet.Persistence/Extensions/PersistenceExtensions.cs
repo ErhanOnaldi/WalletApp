@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Wallet.Application.Interfaces.Persistence;
 using Wallet.Application.Interfaces.Persistence.AuditLogs;
 using Wallet.Application.Interfaces.Persistence.ExchangeRates;
 using Wallet.Application.Interfaces.Persistence.RefreshTokens;
@@ -34,6 +35,7 @@ public static class PersistenceExtensions // Extension Classlar static olmalı
         services.AddScoped<ITransferRepository, TransferRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IWalletRepository, WalletRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     
         services.AddDbContext<AppDbContext>((serviceProvider, options) =>
         {

@@ -1,7 +1,9 @@
+using System.Text.Json;
 using Wallet.Application.Features.ExchangeRate;
 using Wallet.Application.Features.ExchangeRate.DTOs;
 using Wallet.Application.Features.Transfer.DTOs;
 using Wallet.Application.Interfaces.Persistence;
+using Wallet.Application.Interfaces.Persistence.AuditLogs;
 using Wallet.Application.Interfaces.Persistence.Transactions;
 using Wallet.Application.Interfaces.Persistence.Transfers;
 using Wallet.Application.Interfaces.Persistence.Wallets;
@@ -13,7 +15,8 @@ namespace Wallet.Application.Features.Transfer;
 public class TransferService(ITransferRepository transferRepository, 
     ITransactionRepository transactionRepository, 
     IWalletRepository walletRepository, 
-    IExchangeRateService exchangeRateService, IUnitOfWork unitOfWork) : ITransferService
+    IExchangeRateService exchangeRateService, IUnitOfWork unitOfWork,
+    IAuditLogRepository auditLogRepository) : ITransferService
 {
     public async Task<ServiceResult> TransferAsync(Guid userId,TransferRequest request)
     {
@@ -53,7 +56,7 @@ public class TransferService(ITransferRepository transferRepository,
             return ServiceResult.Fail("amount must be less than balance");
         }
 
-        var totalTransferredAmountAsync = await transferRepository.GetTodaysTotalTransferredAmountAsync(fromWallet.UserId);
+        var totalTransferredAmountAsync = await transferRepository.GetTodaysTotalTransferredAmountAsync(fromWallet.Id);
         if (totalTransferredAmountAsync + request.Amount > fromWallet.DailyTransferLimit)
         {
             return ServiceResult.Fail("amount exceeds daily transfer limit");
@@ -104,6 +107,15 @@ public class TransferService(ITransferRepository transferRepository,
                 ReferenceId = transfer.Id
             }
         );
+        
+        await auditLogRepository.AddAsync(new AuditLog()
+        {
+            UserId = userId,
+            Action = "Transfer",
+            EntityType = "Transfer",
+            EntityId = transfer.Id,
+            NewValues = JsonSerializer.Serialize(transfer)
+        });
         await unitOfWork.SaveChangesAsync();
         return  ServiceResult.Success();
     }
@@ -114,11 +126,13 @@ public class TransferService(ITransferRepository transferRepository,
         {
             return ServiceResult<TransferGetResponse>.Fail("transfer not found");
         }
-        var wallet = await walletRepository.GetByIdAsync(userId);
-        if (transfer.FromWalletId !=  wallet?.Id )
+        
+        var fromWallet = await walletRepository.GetByIdAsync(transfer.FromWalletId);
+        if (fromWallet is null || fromWallet.UserId != userId)
         {
-            return ServiceResult<TransferGetResponse>.Fail("transfer does not belong to userId");
+            return ServiceResult<TransferGetResponse>.Fail("Transfer does not belong to user");
         }
+        
         var transferAsDto = new TransferGetResponse(transfer.IdempotencyKey,
             transfer.ToWalletId,
             transfer.FromWalletId,

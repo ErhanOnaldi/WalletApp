@@ -17,4 +17,6 @@ public class AuthController(IAuthService authService) : CustomBaseController
     [HttpPost("logout")]
     [Authorize]
     public async Task<IActionResult> Logout([FromBody]AuthLogoutRequest request) => CreateActionResult(await authService.Logout(request));
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody]AuthRefreshRequest request) => CreateActionResult(await authService.Refresh(request));
 }

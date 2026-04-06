@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wallet.Application.Features.Transfer;
 using Wallet.Application.Features.Transfer.DTOs;
 
 namespace Wallet.API.Controllers;
-
+[Authorize]
 public class TransferController(ITransferService transferService) : CustomBaseController
 {
     [HttpPost]

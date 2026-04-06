@@ -10,4 +10,9 @@ public class WalletRepository(AppDbContext dbContext) : Repository<WalletEntity>
     {
         return DbContext.Wallets.Where(x => x.UserId == userId).ToListAsync();
     }
+
+    public Task<WalletEntity?> GetWalletByUserId(Guid userId)
+    {
+        return DbContext.Wallets.Where(x => x.UserId == userId).FirstOrDefaultAsync();
+    }
 }

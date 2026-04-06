@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Wallet.Application.Features.Wallet.DTOs;
 using Wallet.Application.Interfaces.Persistence;
+using Wallet.Application.Interfaces.Persistence.AuditLogs;
 using Wallet.Application.Interfaces.Persistence.Transactions;
 using Wallet.Application.Interfaces.Persistence.Wallets;
 using Wallet.Domain.Entities;
@@ -8,7 +10,8 @@ using WalletEntity = Wallet.Domain.Entities.Wallet;
 
 namespace Wallet.Application.Features.Wallet;
 
-public class WalletService(IWalletRepository walletRepository, ITransactionRepository transactionRepository,IUnitOfWork unitOfWork) : IWalletService
+public class WalletService(IWalletRepository walletRepository, ITransactionRepository transactionRepository,IUnitOfWork unitOfWork
+,IAuditLogRepository auditLogRepository) : IWalletService
 {
     
     public async Task<ServiceResult<List<WalletGetByIdResponse>>> GetAllWalletListAsync(Guid userId)
@@ -132,6 +135,14 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
             Description = depositRequest.Description,
             TransactionType = TransactionType.Deposit,
         };
+        await auditLogRepository.AddAsync(new AuditLog()
+        {
+            UserId = userId,
+            Action = "Deposit",
+            EntityType = "Wallet",
+            EntityId = walletId,
+            NewValues = JsonSerializer.Serialize(wallet)
+        });
         await transactionRepository.AddAsync(transaction);
         await unitOfWork.SaveChangesAsync();
         return ServiceResult.Success();
@@ -171,6 +182,14 @@ public class WalletService(IWalletRepository walletRepository, ITransactionRepos
             Description = withdrawalRequest.Description,
             TransactionType = TransactionType.Withdrawal,
         };
+        await auditLogRepository.AddAsync(new AuditLog()
+        {
+            UserId = userId,
+            Action = "Withdrawal",
+            EntityType = "Wallet",
+            EntityId = walletId,
+            NewValues = JsonSerializer.Serialize(wallet)
+        });
         await transactionRepository.AddAsync(transaction);
         await unitOfWork.SaveChangesAsync();
         return ServiceResult.Success();

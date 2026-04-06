@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=db;Port=5432;Database=WalletDb;Username=postgres;Password=erhan;
+      - TokenOption__SecretKey=your-super-secret-key-min-32-characters-long
+      - TokenOption__Issuer=WalletApp
+      - TokenOption__Audience=WalletApp
+      - TokenOption__ExpiryMinutes=60
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: WalletDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: erhan
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
